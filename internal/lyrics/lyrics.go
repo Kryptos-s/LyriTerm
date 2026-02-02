@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -26,12 +29,21 @@ type Fetcher interface {
 }
 
 type LrcLibFetcher struct {
-	Client *http.Client
+	Client   *http.Client
+	CacheDir string
 }
 
 func NewFetcher() *LrcLibFetcher {
+
+	home, err := os.UserHomeDir()
+	var cacheDir string
+	if err == nil {
+		cacheDir = filepath.Join(home, ".config", "lyriterm", "cache")
+	}
+
 	return &LrcLibFetcher{
-		Client: &http.Client{Timeout: 5 * time.Second},
+		Client:   &http.Client{Timeout: 5 * time.Second},
+		CacheDir: cacheDir,
 	}
 }
 
@@ -40,6 +52,14 @@ type apiResponse struct {
 }
 
 func (f *LrcLibFetcher) Fetch(ctx context.Context, artist, title string) (Lyrics, error) {
+
+	artist = strings.TrimSpace(artist)
+	title = strings.TrimSpace(title)
+
+	if cachedLrc, ok := f.loadFromCache(artist, title); ok {
+		return parseLRC(cachedLrc), nil
+	}
+
 	cleanTitle := strings.Split(title, " - ")[0]
 	cleanTitle = strings.Split(cleanTitle, " (")[0]
 
@@ -48,16 +68,64 @@ func (f *LrcLibFetcher) Fetch(ctx context.Context, artist, title string) (Lyrics
 	params.Add("track_name", cleanTitle)
 
 	lrc, err := f.doRequest(ctx, "https://lrclib.net/api/get", params)
-	if err == nil {
+	if err == nil && lrc != "" {
+		f.saveToCache(artist, title, lrc)
 		return parseLRC(lrc), nil
 	}
 
 	lrc, err = f.doSearch(ctx, params)
-	if err == nil {
+	if err == nil && lrc != "" {
+		f.saveToCache(artist, title, lrc)
 		return parseLRC(lrc), nil
 	}
 
 	return nil, fmt.Errorf("no lyrics found")
+}
+
+func (f *LrcLibFetcher) getCachePath(artist, title string) string {
+	if f.CacheDir == "" {
+		return ""
+	}
+
+	reg, _ := regexp.Compile("[^a-zA-Z0-9]+")
+	safeArtist := reg.ReplaceAllString(strings.ToLower(artist), "_")
+	safeTitle := reg.ReplaceAllString(strings.ToLower(title), "_")
+
+	safeArtist = strings.Trim(safeArtist, "_")
+	safeTitle = strings.Trim(safeTitle, "_")
+
+	filename := fmt.Sprintf("%s-%s.lrc", safeArtist, safeTitle)
+	return filepath.Join(f.CacheDir, filename)
+}
+
+func (f *LrcLibFetcher) loadFromCache(artist, title string) (string, bool) {
+	path := f.getCachePath(artist, title)
+	if path == "" {
+		return "", false
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return "", false
+	}
+	return string(data), true
+}
+
+func (f *LrcLibFetcher) saveToCache(artist, title, content string) {
+	path := f.getCachePath(artist, title)
+	if path == "" {
+		return
+	}
+
+	if err := os.MkdirAll(filepath.Dir(path), 0755); err != nil {
+
+		return
+	}
+
+	err := os.WriteFile(path, []byte(content), 0644)
+	if err != nil {
+
+	}
 }
 
 func (f *LrcLibFetcher) doRequest(ctx context.Context, endpoint string, params url.Values) (string, error) {
