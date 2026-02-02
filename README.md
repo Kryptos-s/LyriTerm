@@ -1,6 +1,6 @@
 
 
-```markdown
+
 # LyriTerm
 
 LyriTerm is a terminal-based utility written in Go that displays synchronized lyrics for the currently playing song. It interfaces with MPRIS-compatible media players (Spotify, VLC, etc.) via `playerctl` and fetches lyrics from LRCLIB.
