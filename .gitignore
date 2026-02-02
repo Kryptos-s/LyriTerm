@@ -1,6 +1,6 @@
 /bin/
 /dist/
-lyriterm
+
 *.exe
 *.dll
 *.so
