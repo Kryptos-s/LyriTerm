@@ -1,0 +1,13 @@
+/bin/
+/dist/
+lyriterm
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
