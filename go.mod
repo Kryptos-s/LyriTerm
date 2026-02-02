@@ -1,6 +1,6 @@
 module github.com/kryptos-s/lyriterm
 
-go 1.25.6
+go 1.22
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect
