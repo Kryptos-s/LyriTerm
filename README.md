@@ -1,8 +1,8 @@
 # LyriTerm
 
 Synced lyrics in your terminal for the currently playing song (MPRIS via `playerctl`, lyrics from LRCLIB).
+![Preview](./preview.gif)
 
-<video src="/preview.mp4" autoplay loop muted playsinline></video>
 
 
 ## Features
