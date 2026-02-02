@@ -1,78 +1,81 @@
+LyriTerm
+=======
+
+LyriTerm is a terminal app that shows synced lyrics for the song you’re playing.
+It reads playback state via MPRIS (through playerctl) and fetches lyrics from LRCLIB.
+
+Features
+--------
+- synced, auto-scrolling lyrics
+- karaoke-style word highlighting when the lyric data supports it
+- themes: spotify, nord, dracula, gruvbox, monokai, arch
+- runtime offset control (+/- ms) for syncing
+- built with Bubble Tea
+
+Requirements
+------------
+- playerctl (required)
+- a player that exposes MPRIS (example: Spotify, VLC)
+
+Install playerctl (examples)
+----------------------------
+Arch Linux:
+  pacman -S playerctl
+
+Debian/Ubuntu:
+  sudo apt install playerctl
+
+Fedora:
+  sudo dnf install playerctl
 
 
+Install
+-------
 
-# LyriTerm
+Arch (AUR)
+~~~~~~~~~~
+If you published lyriterm-git:
+  yay -S lyriterm-git
 
-LyriTerm is a terminal-based utility written in Go that displays synchronized lyrics for the currently playing song. It interfaces with MPRIS-compatible media players (Spotify, VLC, etc.) via `playerctl` and fetches lyrics from LRCLIB.
 
-## Features
+Go install
+~~~~~~~~~~
+Requires Go.
 
-- **synchronized Lyrics**: Displays auto-scrolling lyrics synchronized to playback.
-- **Karaoke Highlighting**: Highlights individual words in real-time when supported by the lyric data.
-- **Multiple Themes**: Includes color schemes for Spotify, Nord, Dracula, Gruvbox, Monokai, and Arch Linux.
-- **Offset Adjustment**: Allows runtime adjustment of lyric timing to correct synchronization issues.
-- **Resource Efficient**: Built with Bubble Tea for minimal system resource usage.
+  go install github.com/Kryptos-s/LyriTerm/cmd/lyriterm@latest
 
-## Requirements
+Make sure $(go env GOPATH)/bin is in your PATH.
 
-LyriTerm requires `playerctl` to communicate with media players.
 
-- **Arch Linux**: `pacman -S playerctl`
-- **Debian/Ubuntu**: `apt install playerctl`
-- **Fedora**: `dnf install playerctl`
+Build from source
+~~~~~~~~~~~~~~~~~
+  git clone https://github.com/Kryptos-s/LyriTerm.git
+  cd LyriTerm
+  go build -trimpath -o lyriterm ./cmd/lyriterm
+  sudo install -m755 lyriterm /usr/local/bin/lyriterm
 
-## Installation
 
-### Using Go Install
+Usage
+-----
+Start playback in your player, then run:
+  lyriterm
 
-If you have a Go environment set up, you can install the binary directly:
 
-```bash
-go install https://github.com/kryptos-s/lyriterm/
+Keybinds
+--------
+- q / Ctrl+C: quit
+- s: settings
+- o: offset +100ms
+- p: offset -100ms
+- Esc: close settings
 
-```
 
-Ensure your `$GOPATH/bin` is added to your system `$PATH`.
+Configuration
+-------------
+On first run, LyriTerm creates:
+  ~/.config/lyriterm/config.json
 
-### Building from Source
-
-To build the binary manually:
-
-```bash
-git clone https://github.com/kryptos-s/lyriterm.git
-cd lyriterm
-go build -o lyriterm lyriterm/main.go
-
-```
-
-You can then move the `lyriterm` binary to a directory in your path, such as `/usr/local/bin`.
-
-## Usage
-
-Start the application while a supported media player is active:
-
-```bash
-lyriterm
-
-```
-
-### Key Bindings
-
-| Key | Action |
-| --- | --- |
-| `q` / `Ctrl+C` | Quit application |
-| `s` | Open Settings menu |
-| `o` | Increase global offset (+100ms) |
-| `p` | Decrease global offset (-100ms) |
-| `Esc` | Close Settings menu |
-
-## Configuration
-
-On the first run, a configuration file is generated at `~/.config/lyriterm/config.json`.
-
-**Default Configuration:**
-
-```json
+Example config:
 {
   "theme": "spotify",
   "offset_ms": 0,
@@ -81,18 +84,22 @@ On the first run, a configuration file is generated at `~/.config/lyriterm/confi
   "dim_inactive": true
 }
 
-```
+Options
+-------
+- theme: spotify | nord | dracula | gruvbox | monokai | arch
+- offset_ms: positive delays lyrics, negative advances them
+- karaoke_mode: word highlighting (only if the lyric source provides word timing)
+- dim_inactive: dims non-current lines
+- show_progress: progress bar
 
-### Options
 
-* **theme**: The color scheme to use. Options: `spotify`, `nord`, `dracula`, `gruvbox`, `monokai`, `arch`.
-* **offset_ms**: Global sync offset in milliseconds. Positive values delay the lyrics; negative values speed them up.
-* **karaoke_mode**: Enables word-by-word highlighting (requires synced word data from the API).
-* **dim_inactive**: Lowers the opacity of lines that are not currently being sung.
-* **show_progress**: Toggles the playback progress bar at the bottom of the window.
+Troubleshooting
+---------------
+- “Lyrics not found”: the track may not exist on LRCLIB, or it has no timed lyrics.
+- No player detected: ensure `playerctl status` works and your player exposes MPRIS.
+- Lyrics drift: adjust offset with o / p, then save it in config.
 
-## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-```
+License
+-------
+MIT
