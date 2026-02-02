@@ -34,7 +34,7 @@ Install
 
 Arch (AUR)
 ~~~~~~~~~~
-If you published lyriterm-git:
+
   yay -S lyriterm-git
 
 
