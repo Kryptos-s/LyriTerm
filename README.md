@@ -28,7 +28,7 @@ LyriTerm requires `playerctl` to communicate with media players.
 If you have a Go environment set up, you can install the binary directly:
 
 ```bash
-go install [github.com/kryptos/lyriterm](https://github.com/kryptos-s/lyriterm/)
+go install https://github.com/kryptos-s/lyriterm/
 
 ```
 
@@ -39,7 +39,7 @@ Ensure your `$GOPATH/bin` is added to your system `$PATH`.
 To build the binary manually:
 
 ```bash
-git clone [https://github.com/kryptos-s/lyriterm.git](https://github.com/kryptos-s/lyriterm.git)
+git clone https://github.com/kryptos-s/lyriterm.git
 cd lyriterm
 go build -o lyriterm lyriterm/main.go
 
