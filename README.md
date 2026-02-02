@@ -96,5 +96,3 @@ On the first run, a configuration file is generated at `~/.config/lyriterm/confi
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 ```
-
-```

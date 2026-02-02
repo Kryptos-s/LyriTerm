@@ -2,7 +2,7 @@ package ui
 
 import (
 	"fmt"
-	"lyriterm/internal/config"
+	"github.com/kryptos-s/lyriterm/internal/config"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"

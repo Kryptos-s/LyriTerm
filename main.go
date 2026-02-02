@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"lyriterm/internal/ui"
+	"github.com/kryptos-s/lyriterm/internal/ui"
 	"os"
 
 	tea "github.com/charmbracelet/bubbletea"

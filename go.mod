@@ -1,4 +1,4 @@
-module lyriterm
+module github.com/kryptos-s/lyriterm
 
 go 1.25.6
 

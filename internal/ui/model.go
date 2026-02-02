@@ -3,9 +3,9 @@ package ui
 import (
 	"context"
 	"fmt"
-	"lyriterm/internal/config"
-	"lyriterm/internal/lyrics"
-	"lyriterm/internal/player"
+	"github.com/kryptos-s/lyriterm/internal/config"
+	"github.com/kryptos-s/lyriterm/internal/lyrics"
+	"github.com/kryptos-s/lyriterm/internal/player"
 	"math"
 	"strings"
 	"time"

@@ -1,7 +1,7 @@
 package ui
 
 import (
-	"lyriterm/internal/config"
+	"github.com/kryptos-s/lyriterm/internal/config"
 
 	"github.com/charmbracelet/lipgloss"
 )
