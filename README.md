@@ -2,7 +2,7 @@
 
 Synced lyrics in your terminal for the currently playing song (MPRIS via `playerctl`, lyrics from LRCLIB).
 
-<video src="preview.mp4" autoplay loop muted playsinline></video>
+<video src="/preview.mp4" autoplay loop muted playsinline></video>
 
 
 ## Features
