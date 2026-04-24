@@ -136,8 +136,10 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.settingsIdx = 0
 			case "o":
 				m.Config.OffsetMs += 100
+				m.configMgr.Save(m.Config)
 			case "p":
 				m.Config.OffsetMs -= 100
+				m.configMgr.Save(m.Config)
 			}
 		}
 	}

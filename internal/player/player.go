@@ -25,14 +25,13 @@ func NewSpotifyCtl() *SpotifyCtl {
 }
 
 func (s *SpotifyCtl) GetState() (State, error) {
-	// 1. Check Status
-	out, err := exec.Command("playerctl", "-p", "spotify", "status").Output()
+	out, err := exec.Command("playerctl", "status").Output()
 	if err != nil {
 		return State{Status: "STOPPED"}, nil
 	}
 	status := strings.TrimSpace(string(out))
 
-	metaOut, err := exec.Command("playerctl", "-p", "spotify", "metadata", "--format", "{{artist}}:::{{title}}:::{{mpris:length}}").Output()
+	metaOut, err := exec.Command("playerctl", "metadata", "--format", "{{artist}}:::{{title}}:::{{mpris:length}}").Output()
 	if err != nil {
 		return State{Status: status}, nil
 	}
@@ -47,7 +46,7 @@ func (s *SpotifyCtl) GetState() (State, error) {
 	durMicro, _ := strconv.ParseFloat(parts[2], 64)
 	duration := durMicro / 1000000.0
 
-	posOut, err := exec.Command("playerctl", "-p", "spotify", "position").Output()
+	posOut, err := exec.Command("playerctl", "position").Output()
 	pos := 0.0
 	if err == nil {
 		pos, _ = strconv.ParseFloat(strings.TrimSpace(string(posOut)), 64)
