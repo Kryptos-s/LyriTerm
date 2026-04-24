@@ -129,7 +129,10 @@ func (f *LrcLibFetcher) saveToCache(artist, title, content string) {
 }
 
 func (f *LrcLibFetcher) doRequest(ctx context.Context, endpoint string, params url.Values) (string, error) {
-	req, _ := http.NewRequestWithContext(ctx, "GET", endpoint+"?"+params.Encode(), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", endpoint+"?"+params.Encode(), nil)
+	if err != nil {
+		return "", err
+	}
 	resp, err := f.Client.Do(req)
 	if err != nil {
 		return "", err
@@ -146,12 +149,18 @@ func (f *LrcLibFetcher) doRequest(ctx context.Context, endpoint string, params u
 }
 
 func (f *LrcLibFetcher) doSearch(ctx context.Context, params url.Values) (string, error) {
-	req, _ := http.NewRequestWithContext(ctx, "GET", "https://lrclib.net/api/search"+"?"+params.Encode(), nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", "https://lrclib.net/api/search"+"?"+params.Encode(), nil)
+	if err != nil {
+		return "", err
+	}
 	resp, err := f.Client.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != 200 {
+		return "", fmt.Errorf("status %d", resp.StatusCode)
+	}
 	var res []apiResponse
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil || len(res) == 0 {
 		return "", fmt.Errorf("not found")
@@ -171,8 +180,11 @@ func parseLRC(text string) Lyrics {
 		if len(t) != 2 {
 			continue
 		}
-		m, _ := strconv.ParseFloat(t[0], 64)
-		s, _ := strconv.ParseFloat(t[1], 64)
+		m, merr := strconv.ParseFloat(t[0], 64)
+		s, serr := strconv.ParseFloat(t[1], 64)
+		if merr != nil || serr != nil {
+			continue
+		}
 		lines = append(lines, Line{
 			Time:  (m * 60) + s,
 			Text:  strings.TrimSpace(parts[1]),
